@@ -15,10 +15,10 @@ struct MainView: View {
                     Label("Menu", systemImage: "list.dash")
                 }
             
-//            CreateSpotView()
-//                .tabItem {
-//                    Label("Add Spot", systemImage: "square.and.pencil")
-//                }
+            CreateSpotView()
+                .tabItem {
+                    Label("Add Spot", systemImage: "square.and.pencil")
+                }
         }
     }
 }
