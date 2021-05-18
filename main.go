@@ -20,6 +20,8 @@ func main() {
 	router.HandleFunc("/spots", getAllSpots).Methods("GET")
 	router.HandleFunc("/spots/{id}", getOneSpot).Methods("GET")
 	router.HandleFunc("/spot", createSpot).Methods("POST")
+	router.HandleFunc("/spots/{id}",updateSpot).Methods("PATCH")
+	router.HandleFunc("/spots/{id}",deleteSpot).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8080", router))
 
 }
@@ -88,4 +90,39 @@ func createSpot(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	json.NewEncoder(w).Encode(newSpot)
+}
+
+func updateSpot(w http.ResponseWriter, r *http.Request) {
+	spotID := mux.Vars(r)["id"]
+	var updatedSpot spot
+
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Fprintf(w, "Kindly enter data in order to update")
+	}
+	json.Unmarshal(reqBody, &updatedSpot)
+
+	for i, singleSpot := range spots {
+		if singleSpot.ID == spotID {
+			singleSpot.Title = updatedSpot.Title
+			singleSpot.Address = updatedSpot.Address
+			singleSpot.Level = updatedSpot.Level
+			singleSpot.SurfBreak = updatedSpot.SurfBreak
+			singleSpot.Photo = updatedSpot.Photo
+			updatedSpots := append(spots[:i], singleSpot)
+			spots = append(updatedSpots, spots[i+1:]...)
+			json.NewEncoder(w).Encode(singleSpot)
+		}
+	}
+}
+
+func deleteSpot(w http.ResponseWriter, r *http.Request) {
+	spotID := mux.Vars(r)["id"]
+
+	for i, singleSpot := range spots {
+		if singleSpot.ID == spotID {
+			spots = append(spots[:i], spots[i+1:]...)
+			fmt.Fprintf(w, "The spot with ID %v has been deleted successfully", spotID)
+		}
+	}
 }
