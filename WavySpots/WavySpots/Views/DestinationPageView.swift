@@ -9,18 +9,30 @@ import SwiftUI
 
 struct DestinationPageView: View {
     var spot : Spot
+    @State var isModal: Bool = false
+    
     init(spot: Spot){self.spot = spot}
-
+    
     var body: some View {
         Text(spot.Address)
             .font(.title)
             .foregroundColor(Color("Darkblue"))
+        Text("Difficulty : " + String(spot.Level))
         Text(spot.SurfBreak[0])
             .font(.subheadline)
         CircleImage(photo:spot.Photo)
-      MapView()
+        MapView()
+        
+        Button("Update :(") {
+            self.isModal = true
+        }.sheet(isPresented: $isModal, content: {
+            UpdateSpotView(spot:spot)
+        })
     }
 }
+
+
+
 
 //struct DestinationPageView_Previews: PreviewProvider {
 //    static var previews: some View {
