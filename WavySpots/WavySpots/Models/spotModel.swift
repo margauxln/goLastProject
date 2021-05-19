@@ -21,7 +21,7 @@ struct Spot: Hashable, Codable {
 
 class Api {
     func getSpots(completion: @escaping([Spot]) -> ()) {
-        guard let url = URL(string:"http://192.168.7.115:8080/spots") else {return}
+        guard let url = URL(string:"http://192.168.4.150:8080/spots") else {return}
         URLSession.shared.dataTask(with: url) { (data,_,_)in
             let decoder = JSONDecoder()
             let spots = try? decoder.decode([Spot].self, from: data!)
@@ -35,7 +35,7 @@ class Api {
     func addSpot(newSpot: Spot)->() {
         
         // Prepare URL
-        let url = URL(string: "http://192.168.7.115:8080/spot")
+        let url = URL(string: "http://192.168.4.150:8080/spot")
         guard let requestUrl = url else { fatalError() }
         
         // Prepare URL Request Object
@@ -60,7 +60,10 @@ class Api {
         
     }
     
-    func updateSpot(){}
+    func updateSpot() {
+        
+        
+    }
 }
 
 
