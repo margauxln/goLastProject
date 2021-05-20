@@ -24,12 +24,21 @@ type spot struct {
 }
 
 func main() {
-	db, e := sql.Open("mysql", "rootuser:surfSpot@/surfSpotsBase")
+	db, e := sql.Open("mysql", "root:root@tcp(localhost:8889)/surfBase")
 	ErrorCheck(e)
 
 	// close database after all work is done
 	defer db.Close()
 	PingDB(db)
+
+	// INSERT INTO DB
+	insert, err := db.Query("INSERT INTO `surfBase`.`surfSpots` (`Title`,`Address`,`Level`,`SurfBreak`,`Photo`) VALUES ('Title test 1','Address test 1','3','Reef Break','https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Scarlett_Johansson_by_Gage_Skidmore_2_%28cropped%29_%28cropped%29.jpg/440px-Scarlett_Johansson_by_Gage_Skidmore_2_%28cropped%29_%28cropped%29.jpg')	")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer insert.Close()
+
+	fmt.Println("Successful connection to db")
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)
@@ -38,7 +47,7 @@ func main() {
 	// router.HandleFunc("/spot", createSpot).Methods("POST")
 	// router.HandleFunc("/spots/{id}", updateSpot).Methods("PATCH")
 	// router.HandleFunc("/spots/{id}", deleteSpot).Methods("DELETE")
-	log.Fatal(http.ListenAndServe(":8889", router))
+	log.Fatal(http.ListenAndServe(":8080", router))
 
 }
 

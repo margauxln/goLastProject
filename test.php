@@ -1,16 +1,5 @@
 <?php
-  $db_host = 'localhost';
-  $db_user = 'rootuser';
-  $db_password = 'surfSpot';
-  $db_db = 'surfSpotsBase';
-  $db_port = 8889;
-
-  $mysqli = new mysqli(
-    $db_host,
-    $db_user,
-    $db_password,
-    $db_db
-  );
+   $mysqli = new mysqli("localhost", "root", "", "socialnetwork");
 	
   if ($mysqli->connect_error) {
     echo 'Errno: '.$mysqli->connect_errno;
