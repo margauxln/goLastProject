@@ -2,9 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+
+	//"io/ioutil"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
@@ -14,8 +17,8 @@ func homeLink(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome home!")
 }
 
-type spot struct {
-	ID        int      `json:"ID"`
+type Spot struct {
+	ID        string   `json:"ID"`
 	Title     string   `json:"Title"`
 	Address   string   `json:"Address"`
 	Level     int      `json:"Level"`
@@ -23,26 +26,28 @@ type spot struct {
 	Photo     string   `json:"Photo"`
 }
 
+//var db *sql.DB
+
+// var err error
+
 func main() {
-	db, e := sql.Open("mysql", "root:root@tcp(localhost:8889)/surfBase")
-	ErrorCheck(e)
+	db, err := sql.Open("mysql", "root:root@tcp(localhost:8889)/SurfBase")
+	ErrorCheck(err)
 
 	// close database after all work is done
 	defer db.Close()
 	PingDB(db)
 
 	// INSERT INTO DB
-	insert, err := db.Query("INSERT INTO `surfBase`.`surfSpots` (`Title`,`Address`,`Level`,`SurfBreak`,`Photo`) VALUES ('Title test 1','Address test 1','3','Reef Break','https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Scarlett_Johansson_by_Gage_Skidmore_2_%28cropped%29_%28cropped%29.jpg/440px-Scarlett_Johansson_by_Gage_Skidmore_2_%28cropped%29_%28cropped%29.jpg')	")
-	if err != nil {
-		panic(err.Error())
-	}
-	defer insert.Close()
-
-	fmt.Println("Successful connection to db")
+	// insert, err := db.Query("INSERT INTO `SurfBase`.`Spot` (`ìd`, `Title`,`Address`,`Level`,`SurfBreak`,`Photo`) VALUES ('Title test 1','Address test 1','3','Reef Break','https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Scarlett_Johansson_by_Gage_Skidmore_2_%28cropped%29_%28cropped%29.jpg/440px-Scarlett_Johansson_by_Gage_Skidmore_2_%28cropped%29_%28cropped%29.jpg')	")
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+	// defer insert.Close()
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)
-	// router.HandleFunc("/spots", getAllSpots).Methods("GET")
+	router.HandleFunc("/spots", getAllSpots).Methods("GET")
 	// router.HandleFunc("/spots/{id}", getOneSpot).Methods("GET")
 	// router.HandleFunc("/spot", createSpot).Methods("POST")
 	// router.HandleFunc("/spots/{id}", updateSpot).Methods("PATCH")
@@ -62,7 +67,7 @@ func PingDB(db *sql.DB) {
 	ErrorCheck(err)
 }
 
-type allSpots []spot
+// type allSpots []spot
 
 // var spots = allSpots{
 // 	{
@@ -91,9 +96,45 @@ type allSpots []spot
 // 	},
 // }
 
-// func getAllSpots(w http.ResponseWriter, r *http.Request) {
-// 	json.NewEncoder(w).Encode(spots)
-// }
+func getAllSpots(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root:root@tcp(localhost:8889)/SurfBase")
+	ErrorCheck(err)
+
+	// close database after all work is done
+	defer db.Close()
+	PingDB(db)
+
+	// if db == nil {
+	// 	fmt.Println("db vide")
+	// }
+	// result, err := db.Query("SELECT * from `SurfBase`.`Spot`")
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+	// defer result.Close()
+
+	// json.NewEncoder(w).Encode(result.Next())
+
+	// fmt.Println("Successful connection to db")
+	// 	fmt.Fprintf(w, "get all spots")
+	w.Header().Set("Content-Type", "application/json")
+	var allSpots []Spot
+	result, err := db.Query("SELECT `id`, `title` from `SurfBase`.`Spot`")
+	if err != nil {
+		fmt.Fprintf(w, "Erreur")
+		//panic(err.Error())
+	}
+	defer result.Close()
+	for result.Next() {
+		var spot Spot
+		err := result.Scan(&spot.ID, &spot.Title)
+		if err != nil {
+			panic(err.Error())
+		}
+		allSpots = append(allSpots, spot)
+	}
+	json.NewEncoder(w).Encode(allSpots)
+}
 
 // func getOneSpot(w http.ResponseWriter, r *http.Request) {
 // 	spotID := mux.Vars(r)["id"]
