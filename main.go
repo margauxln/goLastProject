@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"io/ioutil"
 
@@ -28,7 +29,7 @@ type Spot struct {
 
 //var db *sql.DB
 
-var db, err = sql.Open("mysql", "root:root@tcp(localhost:8889)/SurfBase")
+//var db, err = sql.Open("mysql", "root:root@tcp(localhost:8889)/SurfBase")
 
 //ErrorCheck(err)
 
@@ -45,8 +46,8 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)
 	router.HandleFunc("/spots", getAllSpots).Methods("GET")
-	// router.HandleFunc("/spots/{id}", getOneSpot).Methods("GET")
-	// router.HandleFunc("/spot", createSpot).Methods("POST")
+	//router.HandleFunc("/spots/{id}", getOneSpot).Methods("GET")
+	router.HandleFunc("/spot", createSpot).Methods("POST")
 	// router.HandleFunc("/spots/{id}", updateSpot).Methods("PATCH")
 	// router.HandleFunc("/spots/{id}", deleteSpot).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8080", router))
@@ -63,7 +64,6 @@ func PingDB(db *sql.DB) {
 	err := db.Ping()
 	ErrorCheck(err)
 }
-
 func getAllSpots(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:root@tcp(localhost:8889)/SurfBase")
 	ErrorCheck(err)
@@ -102,7 +102,12 @@ func getAllSpots(w http.ResponseWriter, r *http.Request) {
 func createSpot(w http.ResponseWriter, r *http.Request) {
 	var newSpot Spot
 
-	insert, err := db.Query("INSERT INTO `SurfBase`.`Spot` (`id`, `Title`,`Address`,`Level`,`SurfBreak`,`Photo`) VALUES (`" + newSpot.ID + "`, `" + newSpot.Title + "`, `" + newSpot.Address + "`, `" + newSpot.Level + " `, `" + newSpot.SurfBreak + "`, `" + newSpot.Photo + "`)")
+	db, err := sql.Open("mysql", "root:root@tcp(localhost:8889)/SurfBase")
+	ErrorCheck(err)
+	defer db.Close()
+	PingDB(db)
+
+	insert, err := db.Query("INSERT INTO `SurfBase`.`Spot` (`id`, `Title`,`Address`,`Level`,`SurfBreak`,`Photo`) VALUES (`" + newSpot.ID + "`, `" + newSpot.Title + "`, `" + newSpot.Address + "`, `" + strconv.Itoa(newSpot.Level) + " `, `" + newSpot.SurfBreak + "`, `" + newSpot.Photo + "`)")
 	if err != nil {
 		panic(err.Error())
 	}

@@ -10,11 +10,11 @@ import SwiftUI
 
 struct UpdateSpotView: View {
     var spot: Spot
-    @State private var titleForm: String
-    @State private var surfbreakForm: String
-    @State private var photoForm: String
-    @State private var levelForm: Int
-    @State private var addressForm: String
+    @State private var titleForm: String = ""
+    @State private var surfbreakForm: String = ""
+    @State private var photoForm: String = ""
+    @State private var levelForm: Int = 0
+    @State private var addressForm: String = ""
     
     init(spot: Spot) {
         self.spot = spot
