@@ -18,7 +18,7 @@ struct DestinationPageView: View {
             .font(.title)
             .foregroundColor(Color("Darkblue"))
         Text("Difficulty : " + String(spot.Level))
-        Text(spot.SurfBreak[0])
+        Text(spot.SurfBreak)
             .font(.subheadline)
         CircleImage(photo:spot.Photo)
         MapView()

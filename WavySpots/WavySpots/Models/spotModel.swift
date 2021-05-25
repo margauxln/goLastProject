@@ -15,7 +15,7 @@ struct Spot: Hashable, Codable {
     var Address : String = "Vide"
     var Photo : String = ""
     var Level: Int = 0
-    var SurfBreak : [String] = [""]
+    var SurfBreak : String = ""
 }
 
 

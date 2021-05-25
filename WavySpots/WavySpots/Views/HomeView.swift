@@ -32,7 +32,7 @@ struct HomeView: View {
                         NavigationLink(
                             destination: DestinationPageView(spot:Spot)
                         ) {
-                            BoxView(image: Spot.Photo, place: Spot.Address, description: Spot.SurfBreak[0])
+                            BoxView(image: Spot.Photo, place: Spot.Address, description: Spot.SurfBreak)
                         }
                     }
 

@@ -54,7 +54,7 @@ struct CreateSpotView: View {
                 }
                 Section {
                     Button(action: {
-                        Api().addSpot(newSpot : Spot(ID: UUID().uuidString, Title: titleForm, Address: addressForm, Photo: photoForm, Level: levelForm, SurfBreak: [surfbreakForm]))
+                        Api().addSpot(newSpot : Spot(ID: UUID().uuidString, Title: titleForm, Address: addressForm, Photo: photoForm, Level: levelForm, SurfBreak: surfbreakForm))
                         print("Save Spot")
                         showingAlert = true
                     })
