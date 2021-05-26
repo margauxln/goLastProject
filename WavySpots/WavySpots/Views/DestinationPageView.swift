@@ -23,11 +23,17 @@ struct DestinationPageView: View {
         CircleImage(photo:spot.Photo)
         MapView()
         
-        Button("Update :(") {
+        Button("Update") {
             self.isModal = true
         }.sheet(isPresented: $isModal, content: {
             UpdateSpotView(spot:spot)
         })
+        
+        Button(action: {
+            Api().deleteSpot(deleteSpot: spot)
+        }) {
+            Text("Delete")
+        }
     }
 }
 

@@ -28,6 +28,7 @@ struct BoxView: View {
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
+                                .frame(width: 100, height: 80)
                            })
                      //.frame(width: 50, height: 50)
                      VStack(alignment: .leading) {

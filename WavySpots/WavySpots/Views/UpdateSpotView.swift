@@ -10,14 +10,16 @@ import SwiftUI
 
 struct UpdateSpotView: View {
     var spot: Spot
-    @State private var titleForm: String = ""
-    @State private var surfbreakForm: String = ""
-    @State private var photoForm: String = ""
-    @State private var levelForm: Int = 0
-    @State private var addressForm: String = ""
+    @State private var formId: String
+    @State private var titleForm: String
+    @State private var surfbreakForm: String
+    @State private var photoForm: String
+    @State private var levelForm: Int
+    @State private var addressForm: String
     
     init(spot: Spot) {
         self.spot = spot
+        self.formId = self.spot.ID
         self.titleForm = self.spot.Title
         self.surfbreakForm = self.spot.SurfBreak
         self.photoForm = self.spot.Photo
@@ -51,7 +53,7 @@ struct UpdateSpotView: View {
                 }
                 Section {
                     Button(action: {
-                        Api().updateSpot()
+                        Api().updateSpot(updatedSpot: Spot(ID: formId, Title: titleForm, Address: addressForm, Photo: photoForm, Level: levelForm, SurfBreak: surfbreakForm))
                         print("Save Spot")
                         showingAlert = true
                     })

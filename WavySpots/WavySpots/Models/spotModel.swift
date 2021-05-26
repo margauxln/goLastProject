@@ -60,10 +60,48 @@ class Api {
         
     }
     
-    func updateSpot() {
-        
-        
+    func updateSpot(updatedSpot: Spot)->() {
+        // Prepare URL
+        let url = URL(string: "http://192.168.4.150:8080/spots/"+updatedSpot.ID)
+        guard let requestUrl = url else { fatalError() }
+        // Prepare URL Request Object
+        var request = URLRequest(url: requestUrl)
+        request.httpMethod = "PATCH"
+        // HTTP Request Parameters which will be sent in HTTP Request Body
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let jsonData = try? JSONEncoder().encode(updatedSpot)
+        request.httpBody = jsonData
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                print("Error took place \(error)")
+                return
+            }
+        }
+        task.resume()
     }
+    
+    func deleteSpot(deleteSpot: Spot)->() {
+        // Prepare URL
+        let url = URL(string: "http://192.168.4.150:8080/spots/"+deleteSpot.ID)
+        guard let requestUrl = url else { fatalError() }
+        // Prepare URL Request Object
+        var request = URLRequest(url: requestUrl)
+        request.httpMethod = "DELETE"
+        // HTTP Request Parameters which will be sent in HTTP Request Body
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let jsonData = try? JSONEncoder().encode(deleteSpot)
+        request.httpBody = jsonData
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                print("Error took place \(error)")
+                return
+            }
+        }
+        task.resume()
+    }
+    
 }
 
 
