@@ -27,21 +27,10 @@ type Spot struct {
 	SurfBreak string `json:"SurfBreak"`
 }
 
-//var db *sql.DB
-
-//var db, err = sql.Open("mysql", "root:root@tcp(localhost:8889)/SurfBase")
-
-//ErrorCheck(err)
-
+// var db *sql.DB
 // var err error
 
 func main() {
-	// db, err := sql.Open("mysql", "root:root@tcp(localhost:8889)/SurfBase")
-	// ErrorCheck(err)
-
-	// close database after all work is done
-	// defer db.Close()
-	// PingDB(db)
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)
@@ -104,14 +93,6 @@ func createSpot(w http.ResponseWriter, r *http.Request) {
 
 	db, err := sql.Open("mysql", "root:root@tcp(localhost:8889)/SurfBase")
 	ErrorCheck(err)
-	defer db.Close()
-	PingDB(db)
-
-	insert, err := db.Query("INSERT INTO `SurfBase`.`Spot` (`id`, `Title`,`Address`,`Level`,`SurfBreak`,`Photo`) VALUES (`" + newSpot.ID + "`, `" + newSpot.Title + "`, `" + newSpot.Address + "`, `" + strconv.Itoa(newSpot.Level) + " `, `" + newSpot.SurfBreak + "`, `" + newSpot.Photo + "`)")
-	if err != nil {
-		panic(err.Error())
-	}
-	defer insert.Close()
 
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -119,10 +100,20 @@ func createSpot(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.Unmarshal(reqBody, &newSpot)
+	fmt.Println(newSpot.Title)
+	fmt.Println(newSpot.Address)
+	insert, err := db.Query("INSERT INTO `Spot` VALUES ('" + newSpot.ID + "', '" + newSpot.Title + "', '" + newSpot.Address + "', '" + strconv.Itoa(newSpot.Level) + "', '" + newSpot.Photo + "', '" + newSpot.SurfBreak + "')")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer insert.Close()
 	//spots = append(spots, newSpot)
 	w.WriteHeader(http.StatusCreated)
 
 	json.NewEncoder(w).Encode(newSpot)
+
+	defer db.Close()
+	PingDB(db)
 }
 
 // func updateSpot(w http.ResponseWriter, r *http.Request) {
